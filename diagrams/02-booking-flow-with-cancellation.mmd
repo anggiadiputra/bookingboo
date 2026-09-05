@@ -1,0 +1,39 @@
+flowchart TD
+    A([Mulai]) --> B[Pasien atau keluarga mencari caregiver]
+    B --> C[Memilih caregiver dan jadwal]
+    C --> D[Mengajukan booking]
+    D --> E{Caregiver menerima?}
+
+    E -- Tidak --> B
+    E -- Ya --> F[Invoice dibuat]
+    F --> G{Pasien membatalkan?}
+
+    G -- Ya --> H{Sesuai aturan pembatalan?}
+    H -- Ya --> I[Refund diproses]
+    H -- Tidak --> J[Biaya pembatalan dipotong]
+    I --> K([Booking dibatalkan])
+    J --> K
+
+    G -- Tidak --> L[Pasien melakukan pembayaran]
+    L --> M{Pembayaran berhasil?}
+    M -- Tidak --> L
+    M -- Ya --> N[Booking dikonfirmasi]
+
+    N --> O{Caregiver membatalkan?}
+    O -- Ya --> P[Admin menawarkan caregiver pengganti]
+    P --> Q{Pasien menyetujui pengganti?}
+    Q -- Tidak --> I
+    Q -- Ya --> R[Booking diperbarui]
+
+    O -- Tidak --> R
+    R --> S[Caregiver check-in]
+    S --> T[Pendampingan pasien]
+    T --> U{Layanan dibatalkan saat berlangsung?}
+
+    U -- Ya --> V[Hitung durasi aktual dan biaya]
+    U -- Tidak --> W[Caregiver check-out]
+    W --> V
+
+    V --> X[Pembayaran caregiver diproses]
+    X --> Y[Pasien memberi rating caregiver]
+    Y --> Z([Selesai])

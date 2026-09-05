@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Font Whitney SSM (lokal, via Vite asset) ===== */
+@font-face {
+    font-family: 'Whitney SSm';
+    src: url('../fonts/whitney/whitney-ssm-book.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Whitney SSm';
+    src: url('../fonts/whitney/whitney-ssm-medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Whitney SSm';
+    src: url('../fonts/whitney/whitney-ssm-semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Sementara: bobot di atas 600 dipetakan ke semibold agar tetap tajam */
+@font-face {
+    font-family: 'Whitney SSm';
+    src: url('../fonts/whitney/whitney-ssm-semibold.ttf') format('truetype');
+    font-weight: 700 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+}
+
+html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+}
+
+/* Sembunyikan elemen Alpine sebelum JS termuat agar tidak berkedip */
+[x-cloak] {
+    display: none !important;
+}

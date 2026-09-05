@@ -1,0 +1,27 @@
+flowchart LR
+    P["Pasien / Keluarga"] -->|1. Registrasi dan isi kebutuhan| A["Platform Booking Caregiver"]
+    C["Caregiver"] -->|Daftar, verifikasi, atur tarif dan jadwal| A
+
+    P -->|2. Cari caregiver| A
+    A -->|3. Tampilkan profil, tarif, rating dan jadwal| P
+    P -->|4. Ajukan booking| A
+    A -->|5. Kirim permintaan| C
+    C -->|6. Terima atau tolak booking| A
+
+    A -->|7. Konfirmasi pesanan dan invoice| P
+    P -->|8. Bayar per jam| PG["Payment Gateway"]
+    PG -->|9. Status pembayaran| A
+
+    A -->|10. Detail jadwal dan kontak| P
+    A -->|10. Detail jadwal dan kontak| C
+    C -->|11. Check-in saat mulai layanan| A
+    C -->|12. Pendampingan pasien| P
+    C -->|13. Check-out saat selesai| A
+
+    A -->|14. Hitung durasi dan biaya akhir| P
+    A -->|15. Salurkan pendapatan setelah komisi| C
+    P -->|16. Rating dan ulasan caregiver| A
+    P -->|Komplain atau bantuan| ADM["Admin Platform"]
+    C -->|Komplain atau bantuan| ADM
+
+    A -->|Komisi atau biaya layanan| B["Pendapatan Platform"]
