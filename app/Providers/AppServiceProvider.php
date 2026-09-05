@@ -80,15 +80,36 @@ class AppServiceProvider extends ServiceProvider
             $clientKey = config('midtrans.client_key');
             config(['midtrans.enabled' => filled($serverKey) && filled($clientKey)]);
 
-            // Turnstile: boolean enabled + string keys.
-            if (array_key_exists('turnstile.enabled', $settings)) {
-                config(['turnstile.enabled' => (bool) $settings['turnstile.enabled']]);
+            // Turnstile: boolean enabled (manual) + string keys.
+            // Aktif HANYA jika toggle menyala DAN memakai key asli (bukan test key
+            // 1x0000...), sehingga widget tidak muncul dengan key dummy.
+            $turnstileEnabled = (bool) ($settings['turnstile.enabled'] ?? config('turnstile.enabled', true));
+            $turnstileSite = $settings['turnstile.site_key'] ?? config('turnstile.site_key', '');
+            $turnstileSecret = $settings['turnstile.secret_key'] ?? config('turnstile.secret_key', '');
+
+            $turnstileSite = filled($turnstileSite) && ! str_starts_with((string) $turnstileSite, '1x0000') ? (string) $turnstileSite : '';
+            $turnstileSecret = filled($turnstileSecret) && ! str_starts_with((string) $turnstileSecret, '1x0000') ? (string) $turnstileSecret : '';
+
+            config(['turnstile.site_key' => $turnstileSite]);
+            config(['turnstile.secret_key' => $turnstileSecret]);
+            config(['turnstile.enabled' => $turnstileEnabled && $turnstileSite !== '' && $turnstileSecret !== '']);
+
+            // SMTP: aktifkan mailer smtp bila host terisi; jika tidak, biarkan
+            // nilai .env (mis. log) berlaku.
+            $mailHost = $settings['mail.host'] ?? '';
+            if (filled($mailHost)) {
+                config([
+                    'mail.default' => $settings['mail.mailer'] ?? 'smtp',
+                    'mail.mailers.smtp.host' => $mailHost,
+                    'mail.mailers.smtp.port' => (int) ($settings['mail.port'] ?? 587),
+                    'mail.mailers.smtp.username' => $settings['mail.username'] ?? null,
+                    'mail.mailers.smtp.password' => $settings['mail.password'] ?? null,
+                    'mail.mailers.smtp.encryption' => $settings['mail.encryption'] ?? 'tls',
+                ]);
             }
-            if (array_key_exists('turnstile.site_key', $settings) && filled($settings['turnstile.site_key'])) {
-                config(['turnstile.site_key' => $settings['turnstile.site_key']]);
-            }
-            if (array_key_exists('turnstile.secret_key', $settings) && filled($settings['turnstile.secret_key'])) {
-                config(['turnstile.secret_key' => $settings['turnstile.secret_key']]);
+            if (filled($settings['mail.from_address'] ?? '')) {
+                config(['mail.from.address' => $settings['mail.from_address']]);
+                config(['mail.from.name' => $settings['mail.from_name'] ?? config('app.name', 'BookingBoo')]);
             }
         } catch (\Throwable) {
             // Tabel settings belum siap (mis. saat migrasi pertama) — abaikan.

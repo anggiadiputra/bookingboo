@@ -356,7 +356,7 @@ class PaymentMidtransTest extends TestCase
     public function test_snap_token_created_via_api_when_enabled(): void
     {
         Http::fake([
-            'api.sandbox.midtrans.com/v2/transaction' => Http::response([
+            'api.sandbox.midtrans.com/snap/v1/transactions' => Http::response([
                 'status_code' => '201',
                 'token' => 'snap-token-abc',
                 'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vt token',
@@ -375,7 +375,7 @@ class PaymentMidtransTest extends TestCase
     public function test_snap_token_failure_returns_error_message(): void
     {
         Http::fake([
-            'api.sandbox.midtrans.com/v2/transaction' => Http::response([
+            'api.sandbox.midtrans.com/snap/v1/transactions' => Http::response([
                 'status_code' => '413',
                 'status_message' => 'Order ID sudah ada',
             ], 200),

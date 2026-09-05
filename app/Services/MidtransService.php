@@ -41,7 +41,7 @@ class MidtransService
         }
 
         $response = Http::withBasicAuth(config('midtrans.server_key'), '')
-            ->post(config('midtrans.api_url').'/v2/transaction', [
+            ->post(config('midtrans.api_url').'/snap/v1/transactions', [
                 'transaction_details' => [
                     'order_id' => $this->orderCode($booking),
                     'gross_amount' => (int) round($booking->estimateTotal()),
@@ -70,7 +70,10 @@ class MidtransService
 
         $data = $response->json();
 
-        if (($data['status_code'] ?? null) !== '201') {
+        // Respons Snap API sukses berisi field `token` (tanpa status_code).
+        if (empty($data['token'])) {
+            Log::warning('Midtrans snap token: respons tanpa token', ['response' => $data]);
+
             return [null, $data['status_message'] ?? 'Gagal membuat token pembayaran.'];
         }
 

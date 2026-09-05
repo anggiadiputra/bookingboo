@@ -94,6 +94,12 @@
                 @if(auth()->user()->isAdmin() || auth()->user()->isFinance())
                     <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">Finansial</div>
 
+                    <a href="{{ route('admin.transactions.index') }}" 
+                       class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('admin.transactions.*') ? 'bg-black text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
+                        <x-lucide-receipt class="w-4 h-4 shrink-0" />
+                        <span>Daftar Transaksi</span>
+                    </a>
+
                     <a href="{{ route('admin.payouts.index') }}" 
                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('admin.payouts.*') ? 'bg-black text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
                         <x-lucide-coins class="w-4 h-4 shrink-0" />

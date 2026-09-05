@@ -24,6 +24,11 @@ class SettingSeeder extends Seeder
             'turnstile.enabled' => config('turnstile.enabled') ? '1' : '0',
             'turnstile.site_key' => config('turnstile.site_key'),
             'turnstile.secret_key' => config('turnstile.secret_key'),
+            'mail.host' => config('mail.mailers.smtp.host'),
+            'mail.port' => config('mail.mailers.smtp.port'),
+            'mail.mailer' => config('mail.default'),
+            'mail.from_address' => config('mail.from.address'),
+            'mail.from_name' => config('mail.from.name'),
         ];
 
         foreach ($defaults as $key => $value) {

@@ -29,9 +29,18 @@
                     </p>
                 </div>
             </div>
-            <a href="{{ route('help') }}" class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors" title="Bantuan">
-                <x-lucide-life-buoy class="w-4 h-4 text-rose-500" />
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('help') }}" class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors" title="Bantuan">
+                    <x-lucide-life-buoy class="w-4 h-4 text-rose-500" />
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" title="Keluar"
+                            class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-colors">
+                        <x-lucide-log-out class="w-4 h-4" />
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Quick Summary Stats Card -->

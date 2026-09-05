@@ -43,6 +43,16 @@ class Setting extends Model
             'turnstile.enabled' => 'boolean',
             'turnstile.site_key' => 'string',
             'turnstile.secret_key' => 'string',
+
+            // SMTP / mail (pengiriman verifikasi, reset password, notifikasi).
+            'mail.mailer' => 'string',
+            'mail.host' => 'string',
+            'mail.port' => 'integer',
+            'mail.username' => 'string',
+            'mail.password' => 'string',
+            'mail.encryption' => 'string',
+            'mail.from_address' => 'string',
+            'mail.from_name' => 'string',
         ];
     }
 

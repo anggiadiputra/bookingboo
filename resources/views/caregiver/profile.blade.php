@@ -94,5 +94,15 @@
                 </form>
             </div>
         </div>
+
+        <!-- ===== Keluar ===== -->
+        <form method="POST" action="{{ route('logout') }}" class="pt-2">
+            @csrf
+            <button type="submit" onclick="return confirm('Yakin ingin keluar dari akun?')"
+                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-rose-200 bg-rose-50/60 text-rose-600 text-sm font-semibold hover:bg-rose-100 transition-colors">
+                <x-lucide-log-out class="w-4 h-4" />
+                Keluar dari Akun
+            </button>
+        </form>
     </div>
 </x-app-layout>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CaregiverVerificationController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\BookingChatController;
 use App\Http\Controllers\CaregiverBookingController;
 use App\Http\Controllers\CaregiverDocumentController;
@@ -226,6 +227,10 @@ Route::middleware(['auth', 'verified', 'role:support,admin'])->group(function ()
 Route::middleware(['auth', 'verified', 'role:finance,admin'])->group(function () {
     Route::get('/admin/payouts', [PayoutController::class, 'adminIndex'])->name('admin.payouts.index');
     Route::patch('/admin/payouts/{payout}/process', [PayoutController::class, 'process'])->name('admin.payouts.process');
+
+    // Daftar transaksi & invoice (FR-22 / UC-13) untuk finance & admin
+    Route::get('/admin/transactions', [TransactionController::class, 'index'])->name('admin.transactions.index');
+    Route::get('/admin/transactions/{payment}/invoice', [TransactionController::class, 'invoice'])->name('admin.transactions.invoice');
 });
 
 // Aksi resolusi sengketa: refund & pembatalan payout (finance/admin)

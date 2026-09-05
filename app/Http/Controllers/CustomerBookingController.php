@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Caregiver;
 use App\Services\BookingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 /**
@@ -38,11 +39,29 @@ class CustomerBookingController extends Controller
         }
 
         $validated = $request->validate([
-            'start_time' => ['required', 'date', 'after:now'],
-            'end_time' => ['required', 'date', 'after:start_time'],
+            'start_time' => ['required', 'date'],
+            'end_time' => ['required', 'date'],
             'location' => ['nullable', 'string', 'max:255'],
             'needs' => ['nullable', 'string', 'max:2000'],
         ]);
+
+        // Interpretasikan waktu sebagai WIB (Asia/Jakarta) — app default UTC,
+        // sedangkan semua pengguna berada di WIB. Tanpa ini, jam WIB yang sudah
+        // lewat dianggap masih masa depan oleh server (pergeseran 7 jam).
+        $tz = config('app.booking_timezone', 'Asia/Jakarta');
+        $start = Carbon::parse($validated['start_time'], $tz);
+        $end = Carbon::parse($validated['end_time'], $tz);
+
+        if ($start->isPast()) {
+            return back()->withErrors(['start_time' => 'Waktu mulai tidak boleh di masa lalu.'])->withInput();
+        }
+
+        if ($end->lessThanOrEqualTo($start)) {
+            return back()->withErrors(['end_time' => 'Waktu selesai harus setelah waktu mulai.'])->withInput();
+        }
+
+        $validated['start_time'] = $start;
+        $validated['end_time'] = $end;
 
         [$booking, $error] = $this->bookings->createRequest(
             $caregiver,

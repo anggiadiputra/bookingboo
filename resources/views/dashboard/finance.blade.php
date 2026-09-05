@@ -273,7 +273,7 @@
                     <span>Menu Tindakan & Navigasi Finansial</span>
                 </h2>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <a href="{{ route('admin.payouts.index') }}" class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 hover:shadow-md hover:border-gray-300 transition-all flex items-start gap-3.5 group">
                     <div class="w-10 h-10 bg-gray-100 group-hover:bg-black group-hover:text-white rounded-lg flex items-center justify-center shrink-0 transition-colors text-gray-800">
                         <x-lucide-coins class="w-5 h-5" />
@@ -291,6 +291,16 @@
                     <div>
                         <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide group-hover:text-black">Resolusi Sengketa</h4>
                         <p class="text-xs text-gray-500 mt-0.5">Catat refund atau tahan payout terkait komplain</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.transactions.index') }}" class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 hover:shadow-md hover:border-gray-300 transition-all flex items-start gap-3.5 group">
+                    <div class="w-10 h-10 bg-gray-100 group-hover:bg-black group-hover:text-white rounded-lg flex items-center justify-center shrink-0 transition-colors text-gray-800">
+                        <x-lucide-receipt class="w-5 h-5" />
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wide group-hover:text-black">Daftar Transaksi</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">Semua pembayaran & invoice per transaksi</p>
                     </div>
                 </a>
 

@@ -71,16 +71,33 @@
                     Pilih Tanggal Layanan
                 </label>
                 
-                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                    @foreach($dates as $d)
-                        <button type="button" 
-                                @click="selectedDate = '{{ $d['val'] }}'; updateTimes();"
-                                :class="selectedDate === '{{ $d['val'] }}' ? 'bg-brand text-white border-brand shadow-xs' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
-                                class="px-3.5 py-2 rounded-2xl border text-center shrink-0 transition-all">
-                            <span class="block text-[11px] font-medium" :class="selectedDate === '{{ $d['val'] }}' ? 'text-rose-100' : 'text-slate-400'">{{ $d['day'] }}</span>
-                            <span class="block text-xs font-bold mt-0.5">{{ $d['date'] }}</span>
-                        </button>
-                    @endforeach
+                <div class="flex items-center gap-2">
+                    <!-- Scroll Left -->
+                    <button type="button" @click="scrollDates(-1)"
+                            class="shrink-0 w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"
+                            :class="canScrollDatesLeft ? '' : 'opacity-30 pointer-events-none'">
+                        <x-lucide-chevron-left class="w-4 h-4" />
+                    </button>
+
+                    <div x-ref="dateStrip" @scroll.passive="updateDateScrollState()"
+                         class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth">
+                        @foreach($dates as $d)
+                            <button type="button" 
+                                    @click="selectedDate = '{{ $d['val'] }}'; updateTimes();"
+                                    :class="selectedDate === '{{ $d['val'] }}' ? 'bg-brand text-white border-brand shadow-xs' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
+                                    class="px-3.5 py-2 rounded-2xl border text-center shrink-0 transition-all">
+                                <span class="block text-[11px] font-medium" :class="selectedDate === '{{ $d['val'] }}' ? 'text-rose-100' : 'text-slate-400'">{{ $d['day'] }}</span>
+                                <span class="block text-xs font-bold mt-0.5">{{ $d['date'] }}</span>
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <!-- Scroll Right -->
+                    <button type="button" @click="scrollDates(1)"
+                            class="shrink-0 w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"
+                            :class="canScrollDatesRight ? '' : 'opacity-30 pointer-events-none'">
+                        <x-lucide-chevron-right class="w-4 h-4" />
+                    </button>
                 </div>
             </div>
 
@@ -184,9 +201,25 @@
                 endDateTime: '',
                 endTimeDisplay: '',
                 totalCost: ratePerHour * initialDuration,
+                canScrollDatesLeft: false,
+                canScrollDatesRight: false,
 
                 init() {
                     this.updateTimes();
+                    this.$nextTick(() => this.updateDateScrollState());
+                },
+
+                scrollDates(dir) {
+                    const el = this.$refs.dateStrip;
+                    if (! el) return;
+                    el.scrollBy({ left: dir * 120, behavior: 'smooth' });
+                },
+
+                updateDateScrollState() {
+                    const el = this.$refs.dateStrip;
+                    if (! el) return;
+                    this.canScrollDatesLeft = el.scrollLeft > 0;
+                    this.canScrollDatesRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
                 },
 
                 updateTimes() {

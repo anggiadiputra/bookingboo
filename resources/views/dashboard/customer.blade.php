@@ -19,9 +19,18 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ route('help') }}" class="w-9 h-9 rounded-full bg-white border border-rose-100 shadow-sm flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-colors" title="Bantuan Darurat">
-                <x-lucide-bell class="w-4 h-4" />
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('help') }}" class="w-9 h-9 rounded-full bg-white border border-rose-100 shadow-sm flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-colors" title="Bantuan Darurat">
+                    <x-lucide-bell class="w-4 h-4" />
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" title="Keluar"
+                            class="w-9 h-9 rounded-full bg-white border border-rose-100 shadow-sm flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-colors">
+                        <x-lucide-log-out class="w-4 h-4" />
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Halodoc Quick Search Trigger Bar -->

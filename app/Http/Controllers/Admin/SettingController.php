@@ -25,7 +25,7 @@ class SettingController extends Controller
     {
         $tab = $request->query('tab', 'general');
 
-        abort_unless(in_array($tab, ['general', 'payment', 'commission', 'security'], true), 404);
+        abort_unless(in_array($tab, ['general', 'payment', 'commission', 'security', 'mail'], true), 404);
 
         $keyed = Setting::allKeyed();
 
@@ -49,6 +49,17 @@ class SettingController extends Controller
             'secret_key' => $keyed['turnstile.secret_key'] ?? (string) config('turnstile.secret_key', ''),
         ];
 
+        $mail = [
+            'mailer' => $keyed['mail.mailer'] ?? (string) config('mail.default', 'smtp'),
+            'host' => $keyed['mail.host'] ?? (string) config('mail.mailers.smtp.host', ''),
+            'port' => $keyed['mail.port'] ?? (string) config('mail.mailers.smtp.port', '587'),
+            'username' => $keyed['mail.username'] ?? (string) config('mail.mailers.smtp.username', ''),
+            'password' => $keyed['mail.password'] ?? (string) config('mail.mailers.smtp.password', ''),
+            'encryption' => $keyed['mail.encryption'] ?? (string) config('mail.mailers.smtp.encryption', 'tls'),
+            'from_address' => $keyed['mail.from_address'] ?? (string) config('mail.from.address', ''),
+            'from_name' => $keyed['mail.from_name'] ?? (string) config('mail.from.name', config('app.name', 'BookingBoo')),
+        ];
+
         $commission = [
             'platform_percent' => $keyed['booking.commission.platform_percent'] ?? (string) config('booking.commission.platform_percent'),
             'default_refund_percent' => $keyed['booking.cancellation.default_refund_percent'] ?? (string) config('booking.cancellation.default_refund_percent'),
@@ -57,7 +68,7 @@ class SettingController extends Controller
             'tiers' => $this->tierRows($keyed),
         ];
 
-        return view('admin.settings.index', compact('tab', 'general', 'payment', 'security', 'commission'));
+        return view('admin.settings.index', compact('tab', 'general', 'payment', 'security', 'mail', 'commission'));
     }
 
     /**
@@ -83,6 +94,16 @@ class SettingController extends Controller
                 'enabled' => ['nullable', 'in:0,1'],
                 'site_key' => ['nullable', 'string', 'max:255'],
                 'secret_key' => ['nullable', 'string', 'max:255'],
+            ]),
+            'mail' => $request->validate([
+                'mailer' => ['nullable', 'in:smtp,log,array,sendmail'],
+                'host' => ['nullable', 'string', 'max:255'],
+                'port' => ['nullable', 'integer', 'min:1', 'max:65535'],
+                'username' => ['nullable', 'string', 'max:255'],
+                'password' => ['nullable', 'string', 'max:255'],
+                'encryption' => ['nullable', 'in:tls,ssl,none'],
+                'from_address' => ['nullable', 'email', 'max:255'],
+                'from_name' => ['nullable', 'string', 'max:255'],
             ]),
             'commission' => $request->validate([
                 'platform_percent' => ['required', 'integer', 'min:0', 'max:100'],
@@ -130,6 +151,17 @@ class SettingController extends Controller
                     'turnstile.enabled' => isset($validated['enabled']) && (int) $validated['enabled'] === 1 ? '1' : '0',
                     'turnstile.site_key' => $validated['site_key'] ?? '',
                     'turnstile.secret_key' => $validated['secret_key'] ?? '',
+                ];
+            } elseif ($tab === 'mail') {
+                $map = [
+                    'mail.mailer' => $validated['mailer'] ?? '',
+                    'mail.host' => $validated['host'] ?? '',
+                    'mail.port' => $validated['port'] ?? '',
+                    'mail.username' => $validated['username'] ?? '',
+                    'mail.password' => $validated['password'] ?? '',
+                    'mail.encryption' => $validated['encryption'] ?? '',
+                    'mail.from_address' => $validated['from_address'] ?? '',
+                    'mail.from_name' => $validated['from_name'] ?? '',
                 ];
             } else {
                 $map = [

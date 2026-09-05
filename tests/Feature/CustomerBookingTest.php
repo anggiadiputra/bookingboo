@@ -157,6 +157,51 @@ class CustomerBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 0);
     }
 
+    public function test_today_past_hour_wib_is_rejected(): void
+    {
+        $this->makeSchedule();
+
+        // Simulasi: sekarang pukul 20:00 WIB (server UTC = 13:00 UTC).
+        // Booking 14:00 WIB hari ini SUDAH LEWAT (6 jam lalu) — harus ditolak.
+        // Dulu string "T14:00" tanpa zona dianggap 14:00 UTC = 21:00 WIB
+        // (masih masa depan) sehingga lolos validasi — itulah bug timezone.
+        $nowWib = now()->timezone('Asia/Jakarta');
+
+        // Pastikan jam ini di atas 14:00 WIB agar skenario valid.
+        if ($nowWib->hour < 15) {
+            $this->markTestSkipped('Butuh waktu >= 15:00 WIB untuk skenario jam lewat hari ini.');
+        }
+
+        $today = $nowWib->format('Y-m-d');
+
+        $this->actingAs($this->customerUser)->post(route('customer.bookings.store', $this->caregiver), [
+            'start_time' => $today.'T14:00',
+            'end_time' => $today.'T16:00',
+        ])->assertSessionHasErrors('start_time');
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_future_hour_today_wib_is_accepted(): void
+    {
+        $nowWib = now()->timezone('Asia/Jakarta');
+
+        // Ambil besok 09:00 WIB (pasti masa depan & tidak lintas tengah malam),
+        // lalu jadwalkan 09:00–11:00.
+        $start = $nowWib->copy()->addDay()->setTime(9, 0);
+        $end = $start->copy()->addHours(2);
+
+        // Siapkan jadwal available untuk rentang tsb.
+        $this->makeSchedule($start->format('H:i'), $end->format('H:i'), Schedule::STATUS_AVAILABLE, $start->format('Y-m-d'));
+
+        $this->actingAs($this->customerUser)->post(route('customer.bookings.store', $this->caregiver), [
+            'start_time' => $start->format('Y-m-d\TH:i'),
+            'end_time' => $end->format('Y-m-d\TH:i'),
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
     public function test_caregiver_can_accept_request(): void
     {
         $this->makeSchedule();

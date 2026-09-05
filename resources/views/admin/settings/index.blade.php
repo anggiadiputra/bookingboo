@@ -40,6 +40,11 @@
                 <x-lucide-shield-check class="w-4 h-4" />
                 Keamanan
             </a>
+            <a href="{{ route('admin.settings.index', ['tab' => 'mail']) }}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors {{ $tab === 'mail' ? 'bg-black text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">
+                <x-lucide-mail class="w-4 h-4" />
+                Email / SMTP
+            </a>
         </div>
 
         @if ($tab === 'general')
@@ -48,6 +53,8 @@
             @include('admin.settings.partials.payment', ['payment' => $payment])
         @elseif ($tab === 'security')
             @include('admin.settings.partials.security', ['security' => $security])
+        @elseif ($tab === 'mail')
+            @include('admin.settings.partials.mail', ['mail' => $mail])
         @else
             @include('admin.settings.partials.commission', ['commission' => $commission])
         @endif

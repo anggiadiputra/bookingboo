@@ -69,6 +69,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Booking Timezone (Zona Waktu Pemesanan)
+    |--------------------------------------------------------------------------
+    |
+    | Zona waktu yang dipakai untuk menafsirkan input jadwal dari pengguna
+    | (seluruh pengguna berada di WIB). Default aplikasi tetap UTC untuk
+    | penyimpanan, tapi input form booking diinterpretasikan sebagai
+    | Asia/Jakarta agar validasi "tidak boleh di masa lalu" akurat.
+    |
+    */
+
+    'booking_timezone' => env('BOOKING_TIMEZONE', 'Asia/Jakarta'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |
