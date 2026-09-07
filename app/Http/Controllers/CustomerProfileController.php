@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class CustomerProfileController extends Controller
@@ -34,6 +35,7 @@ class CustomerProfileController extends Controller
         }
 
         $validated = $request->validate([
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'patient_name' => ['nullable', 'string', 'max:255'],
             'patient_birth_date' => ['nullable', 'date', 'before_or_equal:today'],
             'patient_gender' => ['nullable', 'in:male,female'],
@@ -47,6 +49,14 @@ class CustomerProfileController extends Controller
             'emergency_contact' => ['nullable', 'string', 'max:255'],
             'emergency_contact_phone' => ['nullable', 'string', 'max:20'],
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($customer->photo) {
+                Storage::disk('public')->delete($customer->photo);
+            }
+
+            $validated['photo'] = $request->file('photo')->store('customer-photos', 'public');
+        }
 
         // Nama pasien default = nama pemesan, agar profil tidak pernah kosong.
         if (blank($validated['patient_name'] ?? null)) {

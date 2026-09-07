@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CustomerProfileTest extends TestCase
@@ -43,25 +45,28 @@ class CustomerProfileTest extends TestCase
         $response->assertSee('BS');
     }
 
-    public function test_customer_can_update_profile(): void
+    public function test_customer_can_upload_profile_photo(): void
     {
+        Storage::fake('public');
+
         [$user] = $this->makeCustomer();
+        $photo = UploadedFile::fake()->image('customer-profile.jpg', 480, 480);
 
         $response = $this->actingAs($user)->patch('/customer/profile', [
-            'address' => 'Jl. Baru No. 5, Jakarta',
-            'patient_needs' => 'Perawatan luka pasca operasi',
-            'emergency_contact' => 'Andi',
-            'emergency_contact_phone' => '081298765432',
+            'photo' => $photo,
         ]);
 
         $response->assertSessionHas('status');
-        $this->assertDatabaseHas('customers', [
-            'user_id' => $user->id,
-            'address' => 'Jl. Baru No. 5, Jakarta',
-            'patient_needs' => 'Perawatan luka pasca operasi',
-            'emergency_contact' => 'Andi',
-            'emergency_contact_phone' => '081298765432',
-        ]);
+
+        $customer = $user->fresh()->customer;
+
+        $this->assertNotNull($customer->photo);
+        Storage::disk('public')->assertExists($customer->photo);
+
+        $this->actingAs($user)
+            ->get('/customer/profile')
+            ->assertSee(asset('storage/'.$customer->photo), false)
+            ->assertSee('Foto profil pasien');
     }
 
     public function test_caregiver_cannot_access_customer_profile(): void

@@ -11,6 +11,7 @@ class Customer extends Model
 {
     protected $fillable = [
         'user_id',
+        'photo',
         'patient_name',
         'patient_birth_date',
         'patient_gender',

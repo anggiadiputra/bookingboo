@@ -12,9 +12,30 @@
         </button>
     </div>
 
-    <form method="post" action="{{ route('customer.profile.update') }}" class="space-y-5" id="patient-form">
+    <form method="post" action="{{ route('customer.profile.update') }}" class="space-y-5" id="patient-form" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <!-- Foto Profil -->
+        <fieldset>
+            <legend class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">Foto Profil</legend>
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-28 h-28 rounded-full overflow-hidden bg-gradient-to-tr from-rose-100 to-rose-50 border-4 border-white shadow-lg ring-1 ring-rose-100 flex items-center justify-center text-rose-600 font-extrabold text-2xl">
+                    @if($customer->photo)
+                        <img src="{{ asset('storage/' . $customer->photo) }}" alt="Foto profil pasien" class="w-full h-full object-cover">
+                    @else
+                        {{ collect(explode(' ', trim($patientName)))->filter()->take(2)->map(fn (string $part): string => mb_substr($part, 0, 1))->implode('') ?: 'PB' }}
+                    @endif
+                </div>
+                <div class="w-full max-w-sm">
+                    <x-input-label for="photo" :value="__('Unggah Foto Baru')" />
+                    <input id="photo" name="photo" type="file" accept="image/*"
+                        class="mt-1 block w-full text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-rose-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-rose-700 hover:file:bg-rose-100">
+                    <p class="mt-1 text-[11px] text-slate-500">JPG, PNG, atau WebP. Maks 2MB.</p>
+                    <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+                </div>
+            </div>
+        </fieldset>
 
         <!-- 1. Identitas Pasien -->
         <fieldset>

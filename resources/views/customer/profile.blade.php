@@ -20,6 +20,7 @@
             ->map(fn (string $part): string => mb_substr($part, 0, 1))
             ->implode('');
         $patientInitials = $patientInitials !== '' ? mb_strtoupper($patientInitials) : 'PB';
+        $patientPhotoUrl = $customer->photo ? asset('storage/'.$customer->photo) : null;
     @endphp
 
     <div class="p-4 space-y-4">
@@ -38,8 +39,12 @@
         <!-- ===== Kartu Info Ringkas Pasien ===== -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 {{ $hasErrors ? 'hidden' : '' }}" id="patient-summary">
             <div class="flex flex-col items-center text-center gap-4">
-                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-rose-100 to-rose-50 text-rose-600 flex items-center justify-center font-extrabold text-2xl border-4 border-white shadow-lg ring-1 ring-rose-100 shrink-0">
-                    {{ $patientInitials }}
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-rose-100 to-rose-50 text-rose-600 flex items-center justify-center font-extrabold text-2xl border-4 border-white shadow-lg ring-1 ring-rose-100 shrink-0 overflow-hidden">
+                    @if($patientPhotoUrl)
+                        <img src="{{ $patientPhotoUrl }}" alt="Foto profil pasien" class="w-full h-full object-cover">
+                    @else
+                        {{ $patientInitials }}
+                    @endif
                 </div>
                 <div class="min-w-0 w-full">
                     <h3 class="text-base font-bold text-slate-900 truncate">{{ $patientName }}</h3>
