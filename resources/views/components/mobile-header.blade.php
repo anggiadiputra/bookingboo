@@ -48,11 +48,11 @@
     </div>
 
     <!-- Location Bar -->
-    <div class="flex items-center justify-between text-xs text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/60 mb-2.5">
+    <div x-data="locationBanner()" class="flex items-center justify-between text-xs text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/60 mb-2.5">
         <div class="flex items-center gap-1.5 truncate">
             <x-lucide-map-pin class="w-3.5 h-3.5 text-brand shrink-0" />
-            <span class="text-slate-500">Area Layanan:</span>
-            <span class="font-semibold text-slate-800 truncate">Jabodetabek & Sekitarnya</span>
+            <span class="text-slate-500">Area Anda:</span>
+            <span class="font-semibold text-slate-800 truncate" x-text="loading ? 'Mendeteksi lokasi...' : label">Jabodetabek & Sekitarnya</span>
         </div>
         <a href="{{ route('caregivers.index') }}" class="text-brand font-medium hover:underline shrink-0 text-[11px]">Ubah</a>
     </div>
