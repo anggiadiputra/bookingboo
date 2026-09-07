@@ -13,7 +13,10 @@ class CustomerProfileTest extends TestCase
 
     private function makeCustomer(): array
     {
-        $user = User::factory()->create(['role' => 'customer']);
+        $user = User::factory()->create([
+            'role' => 'customer',
+            'name' => 'Budi Santoso',
+        ]);
         $customer = Customer::create([
             'user_id' => $user->id,
             'address' => 'Jl. Melati No. 12, Jakarta',
@@ -35,6 +38,9 @@ class CustomerProfileTest extends TestCase
         $response->assertSee('Profil Pasien / Keluarga');
         $response->assertSee('Kebutuhan Pasien');
         $response->assertSee('Kontak Darurat');
+        $response->assertSee('flex flex-col items-center text-center gap-4');
+        $response->assertSee('rounded-full bg-gradient-to-tr from-rose-100 to-rose-50');
+        $response->assertSee('BS');
     }
 
     public function test_customer_can_update_profile(): void

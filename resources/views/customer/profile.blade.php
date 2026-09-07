@@ -14,6 +14,12 @@
             'female' => 'Perempuan',
             default => null,
         };
+        $patientInitials = collect(explode(' ', trim($patientName)))
+            ->filter()
+            ->take(2)
+            ->map(fn (string $part): string => mb_substr($part, 0, 1))
+            ->implode('');
+        $patientInitials = $patientInitials !== '' ? mb_strtoupper($patientInitials) : 'PB';
     @endphp
 
     <div class="p-4 space-y-4">
@@ -31,11 +37,11 @@
 
         <!-- ===== Kartu Info Ringkas Pasien ===== -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 {{ $hasErrors ? 'hidden' : '' }}" id="patient-summary">
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-100 to-rose-50 text-rose-600 flex items-center justify-center font-bold text-xl border border-rose-100 shrink-0">
-                    {{ substr($patientName, 0, 2) }}
+            <div class="flex flex-col items-center text-center gap-4">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-rose-100 to-rose-50 text-rose-600 flex items-center justify-center font-extrabold text-2xl border-4 border-white shadow-lg ring-1 ring-rose-100 shrink-0">
+                    {{ $patientInitials }}
                 </div>
-                <div class="min-w-0 flex-1">
+                <div class="min-w-0 w-full">
                     <h3 class="text-base font-bold text-slate-900 truncate">{{ $patientName }}</h3>
                     <p class="text-xs text-slate-500 mt-0.5">
                         @if($genderLabel)
@@ -45,7 +51,7 @@
                             {{ $genderLabel ? '·' : '' }} {{ $patientAge }} tahun
                         @endif
                     </p>
-                    <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                    <div class="flex flex-wrap justify-center items-center gap-1.5 mt-2">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-[10px] font-bold text-indigo-700">
                             <x-lucide-id-card class="w-3 h-3" />
                             {{ auth()->user()->public_id }}
